@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ELITE FUND</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --panel:#071a2b; --muted:rgba(255,255,255,0.74);
+    --accentA:#7c3aed; --accentB:#06b6d4; --accentC:#10b981;
+    --card-radius:14px; --pad-lg:20px; --shadow: 0 18px 50px rgba(0,0,0,0.55);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Arial;background:linear-gradient(135deg,#021223 0%,#052b3b 50%,#06313f 100%);color:#eafcff}
+  header{display:flex;align-items:center;gap:16px;padding:16px;background:linear-gradient(90deg,var(--accentA),var(--accentB));box-shadow:0 10px 40px rgba(0,0,0,0.45);position:sticky;top:0;z-index:60}
+  .brand{font-weight:800;font-size:20px}
+  .hamburger{background:transparent;border:none;color:white;font-size:22px;padding:10px;border-radius:10px;cursor:pointer}
+  .top-actions{margin-left:auto;display:flex;gap:12px;align-items:center}
+  .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:10px 12px;border-radius:10px}
+  .btn{background:linear-gradient(90deg,var(--accentB),var(--accentA));border:none;color:#021018;padding:11px 16px;border-radius:12px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
+  .container{max-width:1240px;margin:22px auto;padding:18px}
+  .sidebar{position:fixed;left:20px;top:96px;bottom:26px;width:320px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--card-radius);border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow);transform:translateX(-420px);transition:transform .26s ease;z-index:50}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar .title{font-weight:800;margin-bottom:14px;color:#dff8ff;font-size:18px}
+  .menu-link{display:flex;align-items:center;padding:12px;border-radius:10px;margin:8px 0;background:transparent;color:#e6fbff;text-decoration:none;border:1px solid rgba(255,255,255,0.02);cursor:pointer}
+  .menu-link:hover{background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03))}
+  .main{margin-left:40px;padding-left:360px}
+  .card{background:linear-gradient(180deg,var(--panel), #041a28);padding:var(--pad-lg);border-radius:var(--card-radius);border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow);margin-bottom:18px}
+  .h1{margin:0 0 8px 0;font-size:22px}
+  label{display:block;color:var(--muted);font-size:14px;margin-top:12px}
+  input,select,textarea{width:100%;padding:12px;margin-top:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#e9fbff;font-size:15px}
+  .small{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accentA),var(--accentC));color:#021018;cursor:pointer}
+  .table{width:100%;border-collapse:collapse;margin-top:14px;font-size:15px}
+  .table th,.table td{padding:12px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left}
+  .tabs{display:flex;gap:12px;margin-bottom:12px}
+  .tab{padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.02);cursor:pointer}
+  .tab.active{background:linear-gradient(90deg,var(--accentB),var(--accentA));color:#021018}
+  .muted{color:var(--muted);font-size:13px}
+  .toast{position:fixed;right:22px;bottom:22px;padding:12px 16px;border-radius:12px;background:rgba(0,0,0,0.75);color:#fff;box-shadow:0 18px 50px rgba(0,0,0,0.6);z-index:1000}
+  .hidden{display:none}
+  .action-btn{padding:8px 10px;border-radius:8px;border:0;cursor:pointer;font-weight:700;margin-right:6px}
+  .approve{background:#10b981;color:#021018}
+  .decline{background:#f97316;color:#021018}
+  @media(max-width:1100px){ .main{padding-left:24px;margin-left:0} .sidebar{left:12px;top:82px;width:280px} }
+</style>
+</head>
+<body>
+
+<header>
+  <button id="hamburgerBtn" class="hamburger" title="Toggle menu">☰</button>
+  <div class="brand">ELITE FUND</div>
+  <div class="top-actions">
+    <div id="whoIs" class="muted"></div>
+    <button id="quickMenu" class="ghost" style="display:none">Menu</button>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- AUTH / LOGIN -->
+  <div id="authWrap" class="card" style="max-width:900px;margin:28px auto">
+    <div style="display:flex;gap:18px;align-items:center">
+      <div style="width:84px;height:84px;border-radius:12px;background:linear-gradient(90deg,var(--accentA),var(--accentB));display:flex;align-items:center;justify-content:center;font-weight:900;color:#021018;font-size:20px">EF</div>
+      <div>
+        <div style="font-weight:800;font-size:18px">ELITE FUND</div>
+      </div>
+    </div>
+
+    <div id="loginPanel" style="margin-top:18px">
+      <div class="h1">Login</div>
+      <label>Email or Username</label>
+      <input id="loginUser" placeholder="username or email">
+      <label>Password</label>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <input id="loginPass" type="password" placeholder="password">
+        <button class="small" id="togglePass">Show</button>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:16px">
+        <button class="btn" id="loginBtn">Login</button>
+        <button class="ghost" id="showSignupBtn">Sign Up</button>
+      </div>
+      <div style="margin-top:12px"><a href="#" id="forgotLink" class="muted">Forgot password?</a></div>
+    </div>
+
+    <div id="signupPanel" style="display:none;margin-top:18px">
+      <div class="h1">Create account</div>
+      <label>Username</label><input id="su_user" placeholder="username">
+      <label>Email</label><input id="su_email" placeholder="email">
+      <label>Password</label><input id="su_pass" type="password" placeholder="password">
+      <label>Confirm password</label><input id="su_pass2" type="password" placeholder="confirm password">
+      <div style="display:flex;gap:12px;margin-top:16px">
+        <button class="btn" id="signupBtn">Create Account</button>
+        <button class="ghost" id="backToLoginBtn">Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="appWrap" style="display:none">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar" aria-hidden="true">
+      <div class="title">Navigation</div>
+
+      <!-- User menu -->
+      <div id="userMenu">
+        <div class="menu-link" data-role="user" data-action="nav" data-key="profile">👤 Profile</div>
+        <div class="menu-link" data-role="user" data-action="nav" data-key="deposit">➕ Deposit</div>
+        <div class="menu-link" data-role="user" data-action="nav" data-key="withdraw">💸 Withdraw</div>
+        <div class="menu-link" data-role="user" data-action="nav" data-key="plans">📊 Plans</div>
+        <div class="menu-link" data-role="user" data-action="nav" data-key="earn">💰 Claim</div>
+        <div class="menu-link" data-role="user" data-action="nav" data-key="history">📜 History</div>
+        <div class="menu-link" data-role="user" data-action="nav" data-key="team">👥 Team</div>
+        <div class="menu-link" data-role="user" data-action="nav" data-key="helpline">📞 Helpline</div>
+        <div class="menu-link" data-role="user" data-action="logout">🚪 Logout</div>
+      </div>
+
+      <!-- Admin menu -->
+      <div id="adminMenu" style="display:none; margin-top:18px">
+        <div class="title">Admin</div>
+        <div class="menu-link" data-role="admin" data-action="nav" data-key="dashboard">📊 Dashboard</div>
+        <div class="menu-link" data-role="admin" data-action="nav" data-key="manageUsers">👥 Manage Users</div>
+        <div class="menu-link" data-role="admin" data-action="nav" data-key="managePlans">📑 Manage Plans</div>
+        <div class="menu-link" data-role="admin" data-action="nav" data-key="paymentMethods">💳 Payment Methods</div>
+        <div class="menu-link" data-role="admin" data-action="nav" data-key="deposits">➕ Deposits</div>
+        <div class="menu-link" data-role="admin" data-action="nav" data-key="withdrawals">💸 Withdrawals</div>
+        <div class="menu-link" data-role="admin" data-action="logout">🚪 Logout</div>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main">
+
+      <!-- PROFILE -->
+      <section id="u_profile" class="card" style="display:none">
+        <div style="display:flex;gap:20px;align-items:center">
+          <div style="width:140px">
+            <img id="profilePic" src="" alt="" style="width:140px;height:140px;border-radius:12px;display:none;object-fit:cover">
+          </div>
+          <div style="flex:1">
+            <div style="font-size:18px;font-weight:800" id="profileName">—</div>
+            <div class="muted" style="margin-top:8px">UID: <b id="profileUID">—</b></div>
+            <div class="muted" style="margin-top:8px">Balance: <b id="profileBalance">0.00</b> PKR</div>
+            <div class="muted" style="margin-top:8px">Active Plan: <b id="profilePlan">None</b></div>
+
+            <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
+              <input type="file" id="picInput" accept="image/*">
+              <button class="small" id="uploadPicBtn">Upload Pic</button>
+            </div>
+
+            <div style="margin-top:14px" class="muted">
+              Referral link
+              <div style="display:flex;gap:10px;margin-top:8px">
+                <input id="refInput" readonly style="background:transparent;border:1px solid rgba(255,255,255,0.04);padding:10px;border-radius:10px;width:70%">
+                <button class="small" id="copyRefBtn">Copy</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- DEPOSIT -->
+      <section id="u_deposit" class="card" style="display:none">
+        <div class="h1">Deposit</div>
+        <div class="muted">Send funds to any listed payment method. Then submit a deposit request for admin review.</div>
+        <label>Amount (PKR)</label><input id="dep_amount" type="number" placeholder="e.g. 1000">
+        <label>TILL / Reference (12 digits)</label><input id="dep_till" maxlength="12" placeholder="12-digit TILL ID">
+        <label>Sender Name</label><input id="dep_name" placeholder="Name on payment">
+        <label>Sender Phone</label><input id="dep_phone" placeholder="03xxxxxxxxx">
+        <div style="margin-top:16px;display:flex;gap:12px">
+          <button class="btn" id="sendDepositBtn">Send Deposit Request</button>
+          <button class="ghost" data-action="nav" data-key="history">History</button>
+        </div>
+        <div id="dep_msg" class="muted" style="margin-top:14px"></div>
+      </section>
+
+      <!-- WITHDRAW -->
+      <section id="u_withdraw" class="card" style="display:none">
+        <div class="h1">Withdraw</div>
+        <div class="muted">Create a withdrawal request. Admin will review and approve/decline.</div>
+        <label>Select Wallet</label>
+        <select id="wd_wallet"><option>JazzCash</option><option>EasyPaisa</option><option>Upaisa</option></select>
+        <label>Receiver Name</label><input id="wd_name" placeholder="Receiver name">
+        <label>Receiver Phone</label><input id="wd_phone" placeholder="03xxxxxxxxx">
+        <label>Amount (PKR) — Minimum 200</label><input id="wd_amount" type="number" placeholder="Amount">
+        <div style="margin-top:16px;display:flex;gap:12px">
+          <button class="btn" id="sendWithdrawBtn">Send Withdraw Request</button>
+          <button class="ghost" data-action="nav" data-key="profile">Back</button>
+        </div>
+        <div id="wd_msg" class="muted" style="margin-top:14px"></div>
+      </section>
+
+      <!-- PLANS -->
+      <section id="u_plans" class="card" style="display:none">
+        <div class="h1">Plans</div>
+        <div id="plansContainer" style="display:flex;flex-direction:column;gap:12px"></div>
+      </section>
+
+      <!-- CLAIM -->
+      <section id="u_earn" class="card" style="display:none">
+        <div class="h1">Claim Daily Earnings</div>
+        <div class="muted">Users with an active plan can claim once every 24 hours.</div>
+        <div style="margin-top:16px;display:flex;gap:12px">
+          <button class="btn" id="claimBtn">Claim Now</button>
+          <button class="ghost" data-action="nav" data-key="profile">Back</button>
+        </div>
+        <div id="earn_msg" class="muted" style="margin-top:14px"></div>
+      </section>
+
+      <!-- HISTORY (user) -->
+      <section id="u_history" class="card" style="display:none">
+        <div class="h1">Transaction History</div>
+        <div class="muted">Your deposits and withdrawals.</div>
+
+        <h3 style="margin-top:14px">Deposits</h3>
+        <table class="table" id="tblDeposits">
+          <thead><tr><th>Amount</th><th>TILL</th><th>Sender</th><th>Phone</th><th>Status</th><th>Time</th></tr></thead>
+          <tbody></tbody>
+        </table>
+
+        <h3 style="margin-top:18px">Withdrawals</h3>
+        <table class="table" id="tblWithdrawsUser">
+          <thead><tr><th>Amount</th><th>Wallet</th><th>Receiver</th><th>Phone</th><th>Status</th><th>Time</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- ADMIN: withdraw overview (admin-only) under user panel -->
+      <section id="a_withdraw_history_under_user" class="card" style="display:none">
+        <div class="h1">Admin — Withdrawals Overview</div>
+        <div class="muted">Admin-only: full withdrawal history and statuses.</div>
+        <table class="table" id="admWithdrawsUnderUserTbl">
+          <thead><tr><th>User UID</th><th>Amount</th><th>Wallet</th><th>Name</th><th>Phone</th><th>Status</th><th>Time</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- TEAM -->
+      <section id="u_team" class="card" style="display:none">
+        <div class="h1">Team & Referrals</div>
+        <div class="muted">Your invited members.</div>
+        <div id="teamList" style="margin-top:12px"></div>
+      </section>
+
+      <!-- HELPLINE -->
+      <section id="u_helpline" class="card" style="display:none">
+        <div class="h1">Helpline</div>
+        <p class="muted">WhatsApp Channel: <a href="#" style="color:#9fffdc">Join Channel</a></p>
+        <p class="muted">Phone: <b>03030948131</b></p>
+      </section>
+
+      <!-- ADMIN: dashboard -->
+      <section id="a_dashboard" class="card" style="display:none">
+        <div class="h1">Admin Dashboard</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px">
+          <div class="card" style="padding:16px"><div class="muted">Total Users</div><div id="adm_totalUsers" style="font-weight:800;font-size:20px;margin-top:8px">0</div></div>
+          <div class="card" style="padding:16px"><div class="muted">Total Approved Deposits</div><div id="adm_totalDeposits" style="font-weight:800;font-size:20px;margin-top:8px">0</div></div>
+          <div class="card" style="padding:16px"><div class="muted">Total Approved Withdrawals</div><div id="adm_totalWithdrawals" style="font-weight:800;font-size:20px;margin-top:8px">0</div></div>
+          <div class="card" style="padding:16px"><div class="muted">Platform Liability</div><div id="adm_liability" style="font-weight:800;font-size:20px;margin-top:8px">0</div></div>
+        </div>
+      </section>
+
+      <!-- ADMIN: deposits management -->
+      <section id="a_deposits" class="card" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="h1">Deposit Requests</div>
+          <div class="muted">Approve or decline user deposits</div>
+        </div>
+
+        <div class="tabs" id="depositTabs" style="margin-top:14px">
+          <div class="tab active" data-status="pending">Pending</div>
+          <div class="tab" data-status="approved">Approved</div>
+          <div class="tab" data-status="declined">Declined</div>
+        </div>
+
+        <table class="table" id="admDepositsTbl">
+          <thead><tr><th>User UID</th><th>Amount</th><th>TILL</th><th>Sender</th><th>Phone</th><th>Time</th><th>Action</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- ADMIN: withdrawals management -->
+      <section id="a_withdrawals" class="card" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="h1">Withdraw Requests</div>
+          <div class="muted">Approve or decline user withdrawals</div>
+        </div>
+
+        <div class="tabs" id="withdrawTabs" style="margin-top:14px">
+          <div class="tab active" data-status="pending">Pending</div>
+          <div class="tab" data-status="approved">Approved</div>
+          <div class="tab" data-status="declined">Declined</div>
+        </div>
+
+        <table class="table" id="admWithdrawsTbl">
+          <thead><tr><th>User UID</th><th>Amount</th><th>Wallet</th><th>Name</th><th>Phone</th><th>Time</th><th>Action</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- ADMIN: manage users -->
+      <section id="a_manageUsers" class="card" style="display:none">
+        <div class="h1">Manage Users</div>
+        <table class="table" id="admUsersTbl">
+          <thead><tr><th>Username</th><th>Email</th><th>UID</th><th>Balance</th><th>Plan</th><th>Actions</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- ADMIN: manage plans (includes name) -->
+      <section id="a_managePlans" class="card" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="h1">Manage Plans</div>
+          <div class="muted">Edit plan name, price, daily payout and inviter reward.</div>
+        </div>
+
+        <table class="table" id="admPlansTbl"><thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Daily</th><th>Inviter</th><th>Actions</th></tr></thead><tbody></tbody></table>
+        <div style="margin-top:14px;display:flex;gap:12px;align-items:center">
+          <input id="new_plan_name" placeholder="Plan name"><input id="new_plan_price" placeholder="Price"><input id="new_plan_daily" placeholder="Daily"><input id="new_plan_inv" placeholder="Inviter reward">
+          <button class="btn" id="addPlanBtn">Add Plan</button>
+        </div>
+      </section>
+
+      <!-- ADMIN: payment methods -->
+      <section id="a_paymentMethods" class="card" style="display:none">
+        <div class="h1">Payment Methods</div>
+        <table class="table" id="admPaymentsTbl"><thead><tr><th>Method</th><th>Details</th><th>Actions</th></tr></thead><tbody></tbody></table>
+        <div style="margin-top:14px;display:flex;gap:12px">
+          <input id="pm_method" placeholder="Method"><input id="pm_details" placeholder="Details"><button class="btn" id="addPaymentBtn">Add Payment</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+/* ======== Storage keys & helpers ======== */
+const K_USERS='ef_users', K_PLANS='ef_plans', K_DEPOSITS='ef_deposits', K_WITHDRAWS='ef_withdraws', K_PAYMENTS='ef_payments';
+let currentUid = null; // 'ADMIN' or user uid
+let depositTabStatus='pending', withdrawTabStatus='pending';
+
+const q = s => document.querySelector(s);
+const qa = s => Array.from(document.querySelectorAll(s));
+const toast = (m,t=3000)=>{ const el=q('#toast'); el.textContent=m; el.classList.remove('hidden'); setTimeout(()=>el.classList.add('hidden'),t); };
+const now = ()=>Date.now();
+const fmt = ts=>new Date(ts).toLocaleString();
+const uid6 = ()=>String(Math.floor(100000 + Math.random()*900000));
+function load(k){ return JSON.parse(localStorage.getItem(k) || 'null') || []; }
+function save(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+
+/* ======== Seed default data (if empty) ======== */
+(function seed(){
+  if(!localStorage.getItem(K_PLANS)) save(K_PLANS, [
+    {id:1,name:'Starter',price:400,daily:20,inviter:80},
+    {id:2,name:'Silver',price:800,daily:45,inviter:200},
+    {id:3,name:'Gold',price:1600,daily:85,inviter:360}
+  ]);
+  if(!localStorage.getItem(K_PAYMENTS)) save(K_PAYMENTS, [
+    {id:1,method:'JazzCash',details:'03228786546 (Imran Ali)'},
+    {id:2,method:'Upaisa',details:'03228786546 (Imran Ali)'}
+  ]);
+  if(!localStorage.getItem(K_USERS)) save(K_USERS, [{username:'admin',email:'admin@profitzone.com',pass:'AMIR131P',uid:'000000',balance:0,planId:null,lastClaim:0,inviter:null,pic:null,created:now()}]);
+  if(!localStorage.getItem(K_DEPOSITS)) save(K_DEPOSITS, []);
+  if(!localStorage.getItem(K_WITHDRAWS)) save(K_WITHDRAWS, []);
+})();
+
+/* ======== Sidebar toggle & auto-close on menu click ======== */
+const sidebar = q('#sidebar');
+q('#hamburgerBtn').addEventListener('click', ()=>sidebar.classList.toggle('open'));
+sidebar.addEventListener('click', (ev)=>{
+  const item = ev.target.closest('.menu-link');
+  if(!item) return;
+  sidebar.classList.remove('open'); // auto-close on any menu click
+  const action = item.dataset.action;
+  const role = item.dataset.role;
+  const key = item.dataset.key;
+  if(action === 'logout'){ doLogout(); return; }
+  if(action === 'nav'){
+    if(role==='user') navUser(key);
+    else if(role==='admin') navAdmin(key);
+  }
+});
+
+/* Quick data-action nav buttons in main content */
+document.addEventListener('click', (ev)=>{
+  const n = ev.target.closest('[data-action="nav"]');
+  if(!n) return;
+  const key = n.dataset.key;
+  if(currentUid === 'ADMIN') navAdmin(key);
+  else navUser(key);
+});
+
+/* ======== Login / Signup handling ======== */
+q('#togglePass').addEventListener('click', ()=>{ const el=q('#loginPass'); el.type = el.type==='password'?'text':'password'; });
+q('#showSignupBtn').addEventListener('click', ()=>{ q('#signupPanel').style.display='block'; q('#loginPanel').style.display='none'; });
+q('#backToLoginBtn').addEventListener('click', ()=>{ q('#signupPanel').style.display='none'; q('#loginPanel').style.display='block'; });
+
+q('#signupBtn').addEventListener('click', ()=>{
+  const username=q('#su_user').value.trim(), email=q('#su_email').value.trim(), pass=q('#su_pass').value, pass2=q('#su_pass2').value;
+  if(!username||!email||!pass) return toast('Fill all signup fields');
+  if(pass!==pass2) return toast('Passwords do not match');
+  const users=load(K_USERS);
+  if(users.find(u=>u.email===email||u.username===username)) return toast('User/email exists');
+  let newUid=uid6(); while(users.find(u=>u.uid===newUid)) newUid=uid6();
+  users.push({username,email,pass,uid:newUid,balance:0,planId:null,lastClaim:0,inviter:null,pic:null,created:now()});
+  save(K_USERS,users);
+  toast('Signup successful — please login');
+  q('#signupPanel').style.display='none'; q('#loginPanel').style.display='block';
+});
+
+q('#loginBtn').addEventListener('click', ()=>{
+  const cred=q('#loginUser').value.trim(), pass=q('#loginPass').value;
+  if(!cred||!pass) return toast('Fill login fields');
+  if(cred==='admin@profitzone.com' && pass==='AMIR131P'){ currentUid='ADMIN'; enterAdmin(); return; }
+  const users=load(K_USERS); const found=users.find(u=> (u.email===cred||u.username===cred) && u.pass===pass);
+  if(!found) return toast('Invalid credentials');
+  currentUid = found.uid; enterUser();
+});
+
+/* ======== Logout ======== */
+function doLogout(){
+  currentUid = null;
+  q('#appWrap').style.display='none';
+  q('#authWrap').style.display='block';
+  q('#loginUser').value=''; q('#loginPass').value='';
+  q('#whoIs').textContent='';
+  sidebar.classList.remove('open');
+  hideAdminSections();
+  toast('Logged out');
+}
+
+/* ======== Enter states & navigation helpers ======== */
+function hideAdminSections(){
+  ['a_dashboard','a_deposits','a_withdrawals','a_manageUsers','a_managePlans','a_paymentMethods','a_withdraw_history_under_user'].forEach(id=>{ if(q('#'+id)) q('#'+id).style.display='none'; });
+  q('#adminMenu').style.display='none';
+}
+function enterUser(){
+  q('#authWrap').style.display='none';
+  q('#appWrap').style.display='block';
+  q('#userMenu').style.display='block';
+  q('#adminMenu').style.display='none';
+  q('#whoIs').textContent='User';
+  renderUserProfile(); renderPlans(); renderUserHistory(); renderTeam();
+  navUser('profile');
+  hideAdminSections();
+  toast('Logged in as user');
+}
+function enterAdmin(){
+  q('#authWrap').style.display='none';
+  q('#appWrap').style.display='block';
+  q('#userMenu').style.display='none';
+  q('#adminMenu').style.display='block';
+  q('#whoIs').textContent='Admin';
+  renderAdminDashboard(); renderAdminUsers(); renderAdminPlans(); renderAdminPayments();
+  navAdmin('dashboard');
+  q('#a_withdraw_history_under_user').style.display='';
+  renderAdminWithdrawUnderUser();
+  toast('Logged in as admin');
+}
+
+function hideAllUser(){ ['u_profile','u_deposit','u_withdraw','u_plans','u_earn','u_history','u_team','u_helpline'].forEach(id=>{ if(q('#'+id)) q('#'+id).style.display='none'; }); }
+function navUser(key){
+  hideAllUser();
+  if(q('#u_'+key)) q('#u_'+key).style.display='';
+  if(key==='profile') renderUserProfile();
+  if(key==='plans') renderPlans();
+  if(key==='history') renderUserHistory();
+  if(key==='team') renderTeam();
+}
+function hideAllAdmin(){ ['a_dashboard','a_manageUsers','a_managePlans','a_paymentMethods','a_deposits','a_withdrawals'].forEach(id=>{ if(q('#'+id)) q('#'+id).style.display='none'; }); }
+function navAdmin(key){
+  hideAllAdmin();
+  if(q('#a_'+key)) q('#a_'+key).style.display='';
+  if(key==='dashboard') renderAdminDashboard();
+  if(key==='manageUsers') renderAdminUsers();
+  if(key==='managePlans') renderAdminPlans();
+  if(key==='paymentMethods') renderAdminPayments();
+  if(key==='deposits'){ depositTabStatus='pending'; updateDepositTabsUI(); renderAdminDeposits(); }
+  if(key==='withdrawals'){ withdrawTabStatus='pending'; updateWithdrawTabsUI(); renderAdminWithdraws(); }
+}
+
+/* ======== User functions ======== */
+function getMe(){ return load(K_USERS).find(u=>u.uid===currentUid) || null; }
+function renderUserProfile(){
+  const u=getMe(); if(!u) return;
+  q('#profileName').textContent = u.username;
+  q('#profileUID').textContent = u.uid;
+  q('#profileBalance').textContent = Number(u.balance||0).toFixed(2);
+  q('#profilePlan').textContent = u.planId ? ( load(K_PLANS).find(p=>p.id===u.planId)?.name || ('Plan '+u.planId) ) : 'None';
+  const ref = `${location.href.split('?')[0]}?ref=${u.uid}`;
+  q('#refInput').value = ref;
+  if(u.pic){ const img=q('#profilePic'); img.src=u.pic; img.style.display='block'; }
+}
+q('#uploadPicBtn').addEventListener('click', ()=>{
+  const f=q('#picInput').files[0]; if(!f) return toast('Choose an image');
+  const r=new FileReader(); r.onload=()=>{
+    const users=load(K_USERS); const me=users.find(x=>x.uid===currentUid);
+    if(me){ me.pic=r.result; save(K_USERS,users); renderUserProfile(); toast('Profile picture saved'); }
+  }; r.readAsDataURL(f);
+});
+q('#copyRefBtn').addEventListener('click', ()=>navigator.clipboard.writeText(q('#refInput').value).then(()=>toast('Referral copied')));
+
+/* Deposit creation (user) */
+q('#sendDepositBtn').addEventListener('click', ()=>{
+  const amount=Number(q('#dep_amount').value), till=q('#dep_till').value.trim(), name=q('#dep_name').value.trim(), phone=q('#dep_phone').value.trim();
+  if(!amount||!till||!name||!phone) { q('#dep_msg').textContent='Fill all fields'; return; }
+  if(till.length!==12) { q('#dep_msg').textContent='TILL must be 12 digits'; return; }
+  const deps=load(K_DEPOSITS); const id=Date.now()+Math.floor(Math.random()*1000);
+  deps.unshift({id,user:currentUid,amount,till,name,phone,status:'pending',time:now()});
+  save(K_DEPOSITS,deps);
+  q('#dep_msg').textContent='Deposit request created (pending)';
+  renderUserHistory(); renderAdminDeposits();
+  toast('Deposit request sent');
+});
+
+/* Withdraw creation (user) */
+q('#sendWithdrawBtn').addEventListener('click', ()=>{
+  const wallet=q('#wd_wallet').value, name=q('#wd_name').value.trim(), phone=q('#wd_phone').value.trim(), amount=Number(q('#wd_amount').value);
+  const users = load(K_USERS); const me = users.find(x=>x.uid===currentUid);
+  if(!wallet||!name||!phone||!amount) { q('#wd_msg').textContent='Fill all fields'; return; }
+  if(amount<200) { q('#wd_msg').textContent='Minimum is 200 PKR'; return; }
+  if(!me.planId) { q('#wd_msg').textContent='Buy a plan first'; return; }
+  const referralsActive = users.filter(x=>x.inviter===currentUid && x.planId).length;
+  if(referralsActive < 2) { q('#wd_msg').textContent='Need at least 2 active referrals'; return; }
+  if(Number(me.balance) < amount) { q('#wd_msg').textContent='Insufficient balance'; return; }
+  const wds=load(K_WITHDRAWS); const id=Date.now()+Math.floor(Math.random()*1000);
+  wds.unshift({id,user:currentUid,amount,wallet,name,phone,status:'pending',time:now()});
+  save(K_WITHDRAWS,wds);
+  q('#wd_msg').textContent='Withdraw request created (pending)';
+  renderUserHistory(); renderAdminWithdraws();
+  toast('Withdraw request sent');
+});
+
+/* Plans rendering (user view) with buy functionality */
+function renderPlans(){
+  const plans = load(K_PLANS);
+  const container = q('#plansContainer'); container.innerHTML='';
+  plans.forEach(p=>{
+    const el=document.createElement('div'); el.style.padding='14px'; el.style.border='1px solid rgba(255,255,255,0.03)'; el.style.borderRadius='10px'; el.style.display='flex'; el.style.justifyContent='space-between'; el.style.alignItems='center';
+    el.innerHTML = `<div><div style="font-weight:800">${p.name} <span class="muted" style="font-weight:600">#${p.id}</span></div><div class="muted" style="margin-top:6px">Price: ${p.price} PKR • Daily: ${p.daily} PKR • Inviter: ${p.inviter} PKR</div></div><div><button class="small" data-buy="${p.id}">Buy</button></div>`;
+    container.appendChild(el);
+  });
+}
+/* delegated buy handler */
+document.addEventListener('click', (ev)=>{
+  const b = ev.target.closest('[data-buy]');
+  if(!b) return;
+  const pid=Number(b.dataset.buy);
+  if(!currentUid || currentUid==='ADMIN'){ toast('Please login as user to buy a plan'); return; }
+  const users = load(K_USERS); const user = users.find(u=>u.uid===currentUid);
+  const plans = load(K_PLANS); const plan = plans.find(p=>p.id===pid);
+  if(!plan) return toast('Plan not found');
+  if(Number(user.balance) < Number(plan.price)) return toast('Insufficient balance to buy plan');
+  // deduct and set plan
+  user.balance = Number(Number(user.balance) - Number(plan.price)).toFixed(2);
+  user.planId = plan.id;
+  // inviter reward
+  if(user.inviter){
+    const users2 = load(K_USERS); const inv = users2.find(x=>x.uid===user.inviter);
+    if(inv){ inv.balance = Number(Number(inv.balance||0) + Number(plan.inviter)).toFixed(2); save(K_USERS, users2); }
+  }
+  save(K_USERS, users);
+  renderUserProfile(); renderUserHistory(); renderAdminDashboard();
+  toast(`Plan purchased: ${plan.name}`);
+});
+
+/* Claim daily */
+q('#claimBtn').addEventListener('click', ()=>{
+  const users = load(K_USERS); const u = users.find(x=>x.uid===currentUid);
+  if(!u) return toast('User missing'); if(!u.planId) { q('#earn_msg').textContent='No active plan'; return; }
+  const plan = load(K_PLANS).find(p=>p.id===u.planId); const last = u.lastClaim || 0;
+  if(now()-last < 24*60*60*1000) { q('#earn_msg').textContent='Claim once every 24 hours'; return; }
+  u.balance = Number(Number(u.balance||0) + Number(plan.daily)).toFixed(2); u.lastClaim = now(); save(K_USERS,users);
+  toast(`Claimed ${plan.daily} PKR`); renderUserProfile(); renderUserHistory();
+});
+
+/* User history rendering */
+function renderUserHistory(){
+  if(!currentUid) return;
+  const deps = load(K_DEPOSITS).filter(d=>d.user===currentUid);
+  const tbD = q('#tblDeposits tbody'); tbD.innerHTML=''; deps.forEach(d=>{ const tr=document.createElement('tr'); tr.innerHTML = `<td>${d.amount}</td><td>${d.till}</td><td>${d.name}</td><td>${d.phone}</td><td>${d.status}</td><td>${fmt(d.time)}</td>`; tbD.appendChild(tr); });
+  const wds = load(K_WITHDRAWS).filter(w=>w.user===currentUid);
+  const tbW = q('#tblWithdrawsUser tbody'); tbW.innerHTML=''; wds.forEach(w=>{ const tr=document.createElement('tr'); tr.innerHTML = `<td>${w.amount}</td><td>${w.wallet}</td><td>${w.name}</td><td>${w.phone}</td><td>${w.status}</td><td>${fmt(w.time)}</td>`; tbW.appendChild(tr); });
+}
+
+/* Team rendering */
+function renderTeam(){ const users=load(K_USERS); const members=users.filter(x=>x.inviter===currentUid); const wrap=q('#teamList'); wrap.innerHTML=''; if(members.length===0){ wrap.textContent='No invited members yet.'; return; } members.forEach(m=>{ const d=document.createElement('div'); d.style.padding='10px'; d.style.border='1px solid rgba(255,255,255,0.03)'; d.style.marginBottom='10px'; d.style.borderRadius='8px'; d.innerHTML=`<b>${m.username}</b> — UID ${m.uid} ${m.planId?'<span style="color:#9fffdc"> (active)</span>':'(no plan)'}`; wrap.appendChild(d); }); }
+
+/* ======== ADMIN: reliable functions ======== */
+
+/* Dashboard */
+function renderAdminDashboard(){
+  if(currentUid!=='ADMIN') return;
+  const users = load(K_USERS);
+  const deps = load(K_DEPOSITS);
+  const wds = load(K_WITHDRAWS);
+  const approvedDeps = deps.filter(d=>d.status==='approved'), approvedWds = wds.filter(w=>w.status==='approved');
+  q('#adm_totalUsers').textContent = users.length;
+  q('#adm_totalDeposits').textContent = approvedDeps.reduce((s,a)=>s + Number(a.amount||0),0).toFixed(2);
+  q('#adm_totalWithdrawals').textContent = approvedWds.reduce((s,a)=>s + Number(a.amount||0),0).toFixed(2);
+  q('#adm_liability').textContent = users.reduce((s,u)=>s + Number(u.balance||0),0).toFixed(2);
+}
+
+/* Manage users */
+function renderAdminUsers(){
+  if(currentUid!=='ADMIN') return;
+  const users = load(K_USERS); const tbody=q('#admUsersTbl tbody'); tbody.innerHTML='';
+  users.forEach(u=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>${u.username}</td><td>${u.email||''}</td><td>${u.uid}</td><td><input value="${Number(u.balance||0).toFixed(2)}" data-balance="${u.uid}" style="width:120px"></td><td>${u.planId||'None'}</td><td><button class="small" data-delete="${u.uid}">Delete</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* Listen balance changes and delete buttons (admin) */
+document.addEventListener('change', (ev)=>{
+  const el = ev.target;
+  if(el.dataset && el.dataset.balance && currentUid==='ADMIN'){
+    const uid = el.dataset.balance; const val = Number(el.value)||0;
+    const users = load(K_USERS); const u = users.find(x=>x.uid===uid);
+    if(u){ u.balance = val; save(K_USERS,users); renderAdminDashboard(); toast('Balance updated'); }
+  }
+});
+document.addEventListener('click', (ev)=>{
+  const del = ev.target.closest('[data-delete]');
+  if(!del) return;
+  if(currentUid!=='ADMIN') return;
+  const uid = del.dataset.delete;
+  if(!confirm('Delete user?')) return;
+  let users = load(K_USERS); users = users.filter(x=>x.uid!==uid); save(K_USERS,users); renderAdminUsers(); renderAdminDashboard(); toast('User deleted');
+});
+
+/* Manage plans (admin) */
+function renderAdminPlans(){
+  if(currentUid!=='ADMIN') return;
+  const plans = load(K_PLANS); const tbody=q('#admPlansTbl tbody'); tbody.innerHTML='';
+  plans.forEach(p=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>${p.id}</td>
+      <td><input data-plan-name="${p.id}" value="${p.name}" style="width:160px"></td>
+      <td><input data-plan-price="${p.id}" value="${p.price}" style="width:110px"></td>
+      <td><input data-plan-daily="${p.id}" value="${p.daily}" style="width:110px"></td>
+      <td><input data-plan-inv="${p.id}" value="${p.inviter}" style="width:110px"></td>
+      <td><button class="small" data-save-plan="${p.id}">Save</button> <button class="small" data-del-plan="${p.id}">Delete</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+/* Add plan */
+q('#addPlanBtn').addEventListener('click', ()=>{
+  if(currentUid!=='ADMIN') return;
+  const name=q('#new_plan_name').value.trim(), price = Number(q('#new_plan_price').value)||0, daily=Number(q('#new_plan_daily').value)||0, inv=Number(q('#new_plan_inv').value)||0;
+  if(!name) return toast('Enter plan name');
+  const plans = load(K_PLANS); const id = plans.length?Math.max(...plans.map(p=>p.id))+1:1;
+  plans.push({id,name,price,daily,inviter:inv}); save(K_PLANS,plans);
+  q('#new_plan_name').value=''; q('#new_plan_price').value=''; q('#new_plan_daily').value=''; q('#new_plan_inv').value='';
+  renderPlans(); renderAdminPlans(); toast('Plan added');
+});
+
+/* Plan save/delete handlers (delegated but robust) */
+document.addEventListener('click', (ev)=>{
+  if(currentUid!=='ADMIN') return;
+  const saveBtn = ev.target.closest('[data-save-plan]');
+  if(saveBtn){
+    const id = Number(saveBtn.dataset.savePlan);
+    const plans = load(K_PLANS); const p = plans.find(x=>x.id===id);
+    if(!p) return toast('Plan not found');
+    // read values from inputs
+    const nameEl = q(`[data-plan-name="${id}"]`), priceEl = q(`[data-plan-price="${id}"]`), dailyEl = q(`[data-plan-daily="${id}"]`), invEl = q(`[data-plan-inv="${id}"]`);
+    const name = nameEl?.value || p.name;
+    const price = Number(priceEl?.value)||0;
+    const daily = Number(dailyEl?.value)||0;
+    const inv = Number(invEl?.value)||0;
+    p.name = name; p.price = price; p.daily = daily; p.inviter = inv;
+    save(K_PLANS,plans);
+    renderPlans(); renderAdminPlans(); toast('Plan saved');
+    return;
+  }
+  const delBtn = ev.target.closest('[data-del-plan]');
+  if(delBtn){
+    const id = Number(delBtn.dataset.delPlan);
+    if(!confirm('Delete plan?')) return;
+    let plans = load(K_PLANS); plans = plans.filter(x=>x.id!==id); save(K_PLANS,plans);
+    renderPlans(); renderAdminPlans(); toast('Plan deleted');
+    return;
+  }
+});
+
+/* Manage payments */
+function renderAdminPayments(){
+  if(currentUid!=='ADMIN') return;
+  const pms = load(K_PAYMENTS); const tbody=q('#admPaymentsTbl tbody'); tbody.innerHTML='';
+  pms.forEach(pm=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td><input data-pm-method="${pm.id}" value="${pm.method}"></td><td><input data-pm-details="${pm.id}" value="${pm.details}"></td><td><button class="small" data-save-pm="${pm.id}">Save</button> <button class="small" data-del-pm="${pm.id}">Delete</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+q('#addPaymentBtn').addEventListener('click', ()=>{
+  if(currentUid!=='ADMIN') return;
+  const method=q('#pm_method').value.trim(), details=q('#pm_details').value.trim();
+  if(!method||!details) return toast('Fill payment fields');
+  const pms=load(K_PAYMENTS); const id=pms.length?Math.max(...pms.map(x=>x.id))+1:1; pms.push({id,method,details}); save(K_PAYMENTS,pms);
+  q('#pm_method').value=''; q('#pm_details').value=''; renderAdminPayments(); toast('Payment added');
+});
+document.addEventListener('click', (ev)=>{
+  if(currentUid!=='ADMIN') return;
+  const s = ev.target.closest('[data-save-pm]'); if(s){ const id=Number(s.dataset.savePm); const pms=load(K_PAYMENTS); const pm=pms.find(x=>x.id===id); pm.method = q(`[data-pm-method="${id}"]`).value; pm.details = q(`[data-pm-details="${id}"]`).value; save(K_PAYMENTS,pms); renderAdminPayments(); toast('Payment saved'); return; }
+  const d = ev.target.closest('[data-del-pm]'); if(d){ const id=Number(d.dataset.delPm); if(!confirm('Delete payment?')) return; let pms=load(K_PAYMENTS); pms = pms.filter(x=>x.id!==id); save(K_PAYMENTS,pms); renderAdminPayments(); return; }
+});
+
+/* ======== Admin Deposit/Withdraw tabs & rendering ======== */
+q('#depositTabs').addEventListener('click', (ev)=>{ if(currentUid!=='ADMIN') return; const t = ev.target.closest('.tab'); if(!t) return; depositTabStatus = t.dataset.status; updateDepositTabsUI(); renderAdminDeposits(); });
+function updateDepositTabsUI(){ qa('#depositTabs .tab').forEach(t=>t.classList.remove('active')); const el = q(`#depositTabs .tab[data-status="${depositTabStatus}"]`); if(el) el.classList.add('active'); }
+
+q('#withdrawTabs').addEventListener('click', (ev)=>{ if(currentUid!=='ADMIN') return; const t = ev.target.closest('.tab'); if(!t) return; withdrawTabStatus = t.dataset.status; updateWithdrawTabsUI(); renderAdminWithdraws(); });
+function updateWithdrawTabsUI(){ qa('#withdrawTabs .tab').forEach(t=>t.classList.remove('active')); const el = q(`#withdrawTabs .tab[data-status="${withdrawTabStatus}"]`); if(el) el.classList.add('active'); }
+
+function renderAdminDeposits(){
+  if(currentUid!=='ADMIN') return;
+  const deps = load(K_DEPOSITS).filter(d=>d.status===depositTabStatus);
+  const tbody = q('#admDepositsTbl tbody'); tbody.innerHTML='';
+  deps.forEach(d=>{
+    const tr=document.createElement('tr');
+    const actionHtml = (d.status==='pending') ? `<button class="action-btn approve" data-approve-dep="${d.id}">Approve</button><button class="action-btn decline" data-decline-dep="${d.id}">Decline</button>` : `<span class="muted">${d.status}</span>`;
+    tr.innerHTML = `<td>${d.user}</td><td>${d.amount}</td><td>${d.till}</td><td>${d.name}</td><td>${d.phone}</td><td>${fmt(d.time)}</td><td>${actionHtml}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderAdminWithdraws(){
+  if(currentUid!=='ADMIN') return;
+  const wds = load(K_WITHDRAWS).filter(w=>w.status===withdrawTabStatus);
+  const tbody = q('#admWithdrawsTbl tbody'); tbody.innerHTML='';
+  wds.forEach(w=>{
+    const tr=document.createElement('tr');
+    const actionHtml = (w.status==='pending') ? `<button class="action-btn approve" data-approve-wd="${w.id}">Approve</button><button class="action-btn decline" data-decline-wd="${w.id}">Decline</button>` : `<span class="muted">${w.status}</span>`;
+    tr.innerHTML = `<td>${w.user}</td><td>${w.amount}</td><td>${w.wallet}</td><td>${w.name}</td><td>${w.phone}</td><td>${fmt(w.time)}</td><td>${actionHtml}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* Admin approve/decline handlers (safe, update balances) */
+document.addEventListener('click', (ev)=>{
+  if(currentUid!=='ADMIN') return;
+  const apro = ev.target.closest('[data-approve-dep]'); if(apro){ const id=Number(apro.dataset.approveDep); let deps=load(K_DEPOSITS); const d=deps.find(x=>x.id===id); if(!d) return toast('Deposit not found'); if(d.status==='approved') return toast('Already approved'); d.status='approved'; save(K_DEPOSITS,deps); // credit user
+    const users = load(K_USERS); const u = users.find(x=>x.uid===d.user); if(u){ u.balance = Number(Number(u.balance||0) + Number(d.amount)).toFixed(2); save(K_USERS,users); } renderAdminDeposits(); renderAdminDashboard(); renderUserHistory(); toast('Deposit approved & user credited'); return; }
+  const dcl = ev.target.closest('[data-decline-dep]'); if(dcl){ const id=Number(dcl.dataset.declineDep); let deps=load(K_DEPOSITS); const d=deps.find(x=>x.id===id); if(!d) return toast('Deposit not found'); d.status='declined'; save(K_DEPOSITS,deps); renderAdminDeposits(); toast('Deposit declined'); return; }
+
+  const aproW = ev.target.closest('[data-approve-wd]'); if(aproW){ const id=Number(aproW.dataset.approveWd); let wds=load(K_WITHDRAWS); const w=wds.find(x=>x.id===id); if(!w) return toast('Withdraw not found'); const users = load(K_USERS); const u=users.find(x=>x.uid===w.user); if(!u) return toast('User not found'); if(Number(u.balance) < Number(w.amount)) return toast('Insufficient user balance'); u.balance = Number(Number(u.balance) - Number(w.amount)).toFixed(2); w.status='approved'; save(K_WITHDRAWS,wds); save(K_USERS,users); renderAdminWithdraws(); renderAdminDashboard(); renderUserHistory(); renderAdminWithdrawUnderUser(); toast('Withdraw approved & user debited'); return; }
+  const dclW = ev.target.closest('[data-decline-wd]'); if(dclW){ const id=Number(dclW.dataset.declineWd); let wds=load(K_WITHDRAWS); const w=wds.find(x=>x.id===id); if(!w) return toast('Withdraw not found'); w.status='declined'; save(K_WITHDRAWS,wds); renderAdminWithdraws(); renderAdminWithdrawUnderUser(); toast('Withdraw declined'); return; }
+});
+
+/* Admin withdraw overview under user area */
+function renderAdminWithdrawUnderUser(){
+  if(currentUid!=='ADMIN'){ q('#a_withdraw_history_under_user').style.display='none'; return; }
+  const tbody=q('#admWithdrawsUnderUserTbl tbody'); tbody.innerHTML=''; const wds=load(K_WITHDRAWS);
+  wds.forEach(w=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${w.user}</td><td>${w.amount}</td><td>${w.wallet}</td><td>${w.name}</td><td>${w.phone}</td><td>${w.status}</td><td>${fmt(w.time)}</td>`; tbody.appendChild(tr); });
+}
+
+/* ======== Initialization ======== */
+document.addEventListener('DOMContentLoaded', ()=>{
+  q('#appWrap').style.display='none';
+  q('#authWrap').style.display='block';
+  renderPlans(); renderAdminDashboard(); renderAdminUsers(); renderAdminPlans(); renderAdminPayments();
+  updateDepositTabsUI(); updateWithdrawTabsUI();
+});
+</script>
+</body>
+</html>
